@@ -77,9 +77,9 @@ form {
 
 #headerTitle {
   text-align: center;
-  padding: 2rem 0;
+  padding: 2rem 2em;
   margin: 0;
-  font-size: 24px;
+  font-size: 30px;
   gap: 10%;
 }
 
@@ -122,7 +122,7 @@ form {
   color: rgba(187, 187, 187, 0.9);
 }
 
-.row Button {
+.row button {
   border-radius: 25px;
   width: 80%;
   height: 40px;
@@ -136,8 +136,14 @@ form {
   transition: opacity 0.25s ease-out;
 }
 
-.row Button:hover {
+.row button:hover {
   opacity: 0.8;
+}
+
+.row a {
+  text-decoration: none;
+  font-weight: bold;
+  padding-top: 15px;
 }
 
 .footer-distributed {

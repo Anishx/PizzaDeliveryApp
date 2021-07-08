@@ -1,4 +1,3 @@
-
 import React, { Component } from "react";
 import { Button, Alert } from "react-bootstrap";
 import APIAuthentication from "./APIAuthentication";
@@ -48,12 +47,14 @@ export default class Login extends Component {
                     <form onSubmit={this.userLogin}>
                         <h2 id="headerTitle">Login</h2>
                         <div class="row">
-                            <input type="text" name="username" id="username" value={this.state.username} placeholder="Enter username" onChange={this.handleChange} />
+                            <input type="text" name="username" id="username" value={this.state.username} placeholder="Enter username" onChange={this.handleChange} required />
                             &nbsp;&nbsp;
-                            <input type="password" name="password" id="password" value={this.state.password} placeholder="Password" onChange={this.handleChange} />
+                            <input type="password" name="password" id="password" value={this.state.password} placeholder="Password" onChange={this.handleChange} required />
                             &nbsp;&nbsp;
-                            <Button variant="primary" type="submit">Sign In</Button>
-                            &nbsp;&nbsp;
+                            <Button variant="primary" type="submit">
+                                Sign In
+                            </Button>
+                            <a href="/register">Create an Account</a>
                         </div>
                         {
                             this.state.error && (
