@@ -1,71 +1,72 @@
-import React from 'react';
-import { useHistory } from "react-router-dom";
 
-import BackVideo from '../video/BGbroll.mp4';
+import React, { Component } from "react";
+import { Button, Alert } from "react-bootstrap";
+import APIAuthentication from "./APIAuthentication";
+import Header from "./Header";
+import Footer from "./Footer";
 
-import Header from './Header';
-import Footer from './Footer';
+export default class Login extends Component {
 
-export default function LoginForm(props) {
-
-    const history = useHistory();
-
-    const createUser = (event) => {
-        history.push('/register');
+    constructor(props) {
+        super(props);
+        this.state = {
+            username: "",
+            password: "",
+            error: ""
+        };
+    }
+    handleChange = (event) => {
+        const name = event.target.id;
+        const value = event.target.value;
+        this.setState({ [name]: value });
     }
 
-    const FormHeader = (props) => (
+    FormHeader = (props) => (
         <h2 id="headerTitle">{props.title}</h2>
     );
 
-    const Form = (props) => (
-        <div>
-            <FormInput placeholder="Username" type="text" />
-            <FormInput placeholder="Password" type="password" />
-            <FormButton title="Log in" />
-        </div>
-    );
+    userLogin = (event) => {
+        event.preventDefault();
+        APIAuthentication
+            .signin(this.state.username, this.state.password)
+            .then(() => {
+                console.log("Logged In successfully");
+                this.props.history.push('/home');
+            },
+                error => {
+                    this.setState({ error: "Invalid Credentials!" })
+                }
+            );
+        console.log(this.state.username);
+    }
 
-    const FormButton = props => (
-        <div id="button" className="row">
-            <button>{props.title}</button>
-        </div>
-    );
-
-    const FormInput = props => (
-        <div className="row">
-            <label>{props.description}</label>
-            <input type={props.type} placeholder={props.placeholder} />
-        </div>
-    );
-
-    const CreateAccount = props => (
-        <div id="alternativeLogin">
-            <div id="button" class="row" >
-                <button type="submit" onClick={createUser}>Create Account</button>
-            </div>
-        </div>
-    );
-
-    const VideoBg = props => (
-        <video src={BackVideo} id="background-video" muted loop autoPlay>
-            Your browser does not support the video tag.
-        </video>
-    );
-
-    return (
-        <>
-            <div>
+    render() {
+        return (
+            <>
                 <Header />
-                {/* <VideoBg /> */}
-                <div id="loginform">
-                    <FormHeader title="Login" />
-                    <Form />
-                    <CreateAccount />
+                <div id="loginForm">
+                    <form onSubmit={this.userLogin}>
+                        <h2 id="headerTitle">Login</h2>
+                        <div class="row">
+                            <input type="text" name="username" id="username" value={this.state.username} placeholder="Enter username" onChange={this.handleChange} />
+                            &nbsp;&nbsp;
+                            <input type="password" name="password" id="password" value={this.state.password} placeholder="Password" onChange={this.handleChange} />
+                            &nbsp;&nbsp;
+                            <Button variant="primary" type="submit">Sign In</Button>
+                            &nbsp;&nbsp;
+                        </div>
+                        {
+                            this.state.error && (
+                                <Alert variant="danger">
+                                    {this.state.error}
+                                </Alert>
+                            )
+                        }
+                    </form>
+
                 </div>
                 <Footer />
-            </div>
-        </>
-    )
+            </>
+        );
+    }
 }
-

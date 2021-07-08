@@ -1,72 +1,85 @@
-import React from 'react';
-import BackVideo from '../video/BGbroll.mp4';
-import { useHistory } from "react-router-dom";
 
-import Header from './Header';
-import Footer from './Footer';
+import React, { Component } from "react";
+import { Button, Alert } from "react-bootstrap";
+import APIAuthentication from "./APIAuthentication";
+import Header from "./Header";
+import Footer from "./Footer";
 
+export default class Register extends Component {
 
-export default function Register(props) {
-
-    const history = useHistory();
-
-    const FormHeader = (props) => (
-        <h2 id="headerTitle">{props.title}</h2>
-    );
-
-    const SignIn = (event) => {
-        history.push('/login');
+    constructor(props) {
+        super(props);
+        this.state = {
+            username: "",
+            password: "",
+            phone: "",
+            email: "",
+            error: ""
+        };
+    }
+    handleChange = (event) => {
+        const name = event.target.id;
+        const value = event.target.value;
+        this.setState({ [name]: value });
     }
 
-    const Form = (props) => (
-        <div>
-            <FormInput placeholder="Email" type="text" />
-            <FormInput placeholder="Phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required />
-            <FormInput placeholder="Password" type="password" />
-            <FormInput placeholder="Repeat Password" type="password" />
-            <FormButton title="Register" />
-        </div>
-    );
+    registerUser = (event) => {
+        event.preventDefault();
+        APIAuthentication.register(this.state.username, this.state.email, this.state.phone, this.state.password)
+            .then(
+                () => {
+                    console.log("User Registered");
+                    alert("Kindly use your credentials to Login");
+                    this.props.history.push('/login');
+                },
+                error => {
+                    this.setState({ error: "Incorrect Credentials" })
+                }
+            );
+        console.log(this.state.username);
+    }
+    render() {
+        return (
+            <>
+                <Header />
+                <div id="loginForm">
+                    <form id="userForm" onSubmit={this.registerUser}>
+                        <h2 id="headerTitle">Register</h2>
+                        <label>
+                            Username
+                            <input type="text" id="username" value={this.state.username} placeholder="Enter username" onChange={this.handleChange} />
+                        </label>
+                        <label>
+                            Password
+                            <input type="password" id="password" value={this.state.password} placeholder="Password" onChange={this.handleChange} />
+                        </label>
+                        <label>
+                            Phone
+                            <input type="number" id="phone" value={this.state.phone} placeholder="Phone" onChange={this.handleChange} />
+                        </label>
+                        <label>
+                            Email
+                            <input type="email" id="email" value={this.state.email} placeholder="Email" onChange={this.handleChange} />
+                        </label>
 
-    const CreateAccount = props => (
-        <div id="alternativeLogin">
-            <div id="button" class="row" >
-                <button type="submit" onClick={SignIn}>Sign In</button>
-            </div>
-        </div>
-    );
-
-    const FormButton = props => (
-        <div id="button" className="row">
-            <button>{props.title}</button>
-        </div>
-    );
-
-    const FormInput = props => (
-        <div className="row">
-            <label>{props.description}</label>
-            <input type={props.type} placeholder={props.placeholder} />
-        </div>
-    );
-
-
-    const VideoBg = props => (
-        <video src={BackVideo} id="background-video" muted loop autoPlay>
-            Your browser does not support the video tag.
-        </video>
-    );
-
-    return (
-        <div>
-            <Header />
-            {/* <VideoBg /> */}
-            <div id="loginform">
-                <FormHeader title="Register" />
-                <Form />
-                <CreateAccount />
-            </div>
-            <Footer />
-        </div>
-    )
+                        <div style={{ display: "inline-block" }}>
+                            <Button variant="primary" type="submit">
+                                Sign Up
+                            </Button>
+                            &nbsp;&nbsp;
+                            <Button href="/login">Sign In</Button>
+                        </div>
+                        {
+                            this.state.error && (
+                                <Alert variant="danger">
+                                    {this.state.error}
+                                </Alert>
+                            )
+                        }
+                    </form>
+                </div>
+                <Footer />
+            </>
+        );
+    }
 }
-
